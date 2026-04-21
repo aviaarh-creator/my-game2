@@ -1,0 +1,540 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Экраны */
+.screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    overflow-y: auto;
+}
+
+.screen.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ========== ЭКРАН МЕНЮ ========== */
+.menu-container {
+    background: linear-gradient(135deg, rgba(74, 78, 105, 0.95), rgba(34, 34, 59, 0.95));
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 50px;
+    min-width: 450px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 217, 102, 0.3);
+}
+
+.game-title {
+    font-size: 2.5em;
+    color: #ffd966;
+    margin-bottom: 40px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.menu-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.menu-main-btn {
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.menu-main-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.menu-main-btn.primary {
+    background: linear-gradient(135deg, #4caf50, #45a049);
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.settings-panel, .color-panel {
+    margin-top: 20px;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.settings-panel h2, .color-panel h2 {
+    color: #ffd966;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.setting-group {
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    gap: 20px;
+}
+
+.setting-group label {
+    font-weight: bold;
+}
+
+.setting-group select {
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.sound-toggle-btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #ff9800;
+    color: white;
+    font-weight: bold;
+}
+
+.menu-secondary-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.menu-secondary-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========== ЭКРАН ИГРЫ ========== */
+.game-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 20px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(74, 78, 105, 0.9), rgba(34, 34, 59, 0.9));
+    padding: 15px 25px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.player-info {
+    display: flex;
+    gap: 30px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.player-name {
+    color: #ffd966;
+}
+
+.player-resources-header {
+    color: #ffd700;
+}
+
+.game-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.game-control-btn {
+    padding: 10px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+}
+
+.game-control-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.game-field-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 10px;
+    overflow: auto;
+}
+
+#gameCanvas {
+    border: 3px solid #ffd966;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #1a1a2e;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== ВСПЛЫВАЮЩЕЕ ОКНО ЗАМКА ========== */
+.castle-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.castle-modal-content {
+    background: linear-gradient(135deg, #4a4e69, #22223b);
+    border-radius: 20px;
+    width: 450px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 217, 102, 0.3);
+    animation: slideIn 0.3s ease;
+}
+
+.castle-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid rgba(255, 217, 102, 0.3);
+}
+
+.castle-modal-header h2 {
+    color: #ffd966;
+    font-size: 1.5em;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 5px 10px;
+}
+
+.close-modal-btn:hover {
+    color: #ffd966;
+    transform: scale(1.1);
+}
+
+.castle-modal-body {
+    padding: 25px;
+}
+
+.castle-info {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.castle-level {
+    color: #ffd966;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.castle-hp {
+    color: white;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.player-resources {
+    color: #ffd700;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.castle-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.modal-action-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.modal-action-btn.upgrade {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+    color: white;
+}
+
+.modal-action-btn.heal {
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    color: white;
+}
+
+.modal-action-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.modal-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.units-section {
+    border-top: 1px solid rgba(255, 217, 102, 0.3);
+    padding-top: 20px;
+}
+
+.units-title {
+    color: #ffd966;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.unit-item {
+    margin: 8px 0;
+}
+
+.unit-buy-modal {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+    font-size: 14px;
+}
+
+.unit-buy-modal:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.unit-buy-modal:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ========== КОНТЕКСТНОЕ МЕНЮ ЮНИТА ========== */
+.unit-context-menu {
+    animation: fadeIn 0.2s ease;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.unit-context-menu button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* ========== МОДАЛЬНОЕ ОКНО ПОБЕДЫ ========== */
+.victory-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(10px);
+}
+
+.victory-content {
+    background: linear-gradient(135deg, #4a4e69, #22223b);
+    padding: 50px;
+    border-radius: 30px;
+    text-align: center;
+    animation: slideIn 0.5s ease;
+}
+
+.victory-content h2 {
+    color: #ffd966;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+.victory-btn {
+    margin: 10px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+    transition: all 0.2s;
+}
+
+.victory-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+/* ========== АНИМАЦИИ ========== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 768px) {
+    .menu-container {
+        min-width: 90%;
+        padding: 30px;
+    }
+    
+    .game-title {
+        font-size: 1.8em;
+    }
+    
+    .game-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .player-info {
+        font-size: 16px;
+        flex-direction: column;
+        text-align: center;
+        gap: 5px;
+    }
+    
+    .game-control-btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    .setting-group {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .castle-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .castle-modal-content {
+        width: 95%;
+    }
+    
+    .unit-buy-modal {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
+
+/* PWA - отступы для безопасной зоны на iPhone */
+@supports (padding: max(0px)) {
+    .game-container {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+        padding-top: max(20px, env(safe-area-inset-top));
+        padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+}
+
+/* ========== СКРОЛЛБАР ========== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ffd966;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ffc107;
+}
+
+.hidden {
+    display: none !important;
+}

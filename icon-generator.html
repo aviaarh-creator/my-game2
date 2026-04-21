@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Генератор иконок для PWA - Квадратные войны</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 { color: #ffd966; margin-bottom: 10px; }
+        .subtitle { color: #aaa; margin-bottom: 30px; }
+        .icons-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .icon-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .icon-card:hover { transform: scale(1.05); }
+        canvas { border: 2px solid #ffd966; border-radius: 15px; margin-bottom: 10px; }
+        button {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .download-all { margin-top: 30px; padding: 12px 30px; font-size: 18px; background: linear-gradient(135deg, #4caf50, #388e3c); }
+        .info { margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <h1>⚔️ Генератор иконок для PWA</h1>
+    <p class="subtitle">Нажмите на кнопки для скачивания иконок разных размеров</p>
+    <div class="icons-container" id="icons"></div>
+    <button class="download-all" onclick="downloadAll()">📦 Скачать все иконки</button>
+    <div class="info">
+        <p>💡 После скачивания поместите все иконки в папку <strong>icons/</strong> рядом с index.html</p>
+        <p>📱 Затем установите приложение через браузер (Добавить на главный экран)</p>
+    </div>
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const icons = {};
+        
+        function generateIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Фон
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Градиент для рамки
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#ffd966');
+            gradient.addColorStop(1, '#ff9800');
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = Math.max(3, size / 15);
+            ctx.strokeRect(size/10, size/10, size - size/5, size - size/5);
+            
+            // Внутренний фон
+            ctx.fillStyle = '#2a2a3e';
+            ctx.fillRect(size/8, size/8, size - size/4, size - size/4);
+            
+            // Основная иконка - меч
+            ctx.fillStyle = '#ffd966';
+            ctx.font = `bold ${size * 0.4}px "Segoe UI", Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('⚔️', size/2, size/2 - size/10);
+            
+            // Текст WAR
+            ctx.font = `${size * 0.12}px Arial`;
+            ctx.fillStyle = '#ffd966';
+            ctx.fillText('WAR', size/2, size/2 + size/4);
+            
+            icons[size] = canvas;
+            
+            // Создание превью
+            const preview = document.createElement('div');
+            preview.className = 'icon-card';
+            const previewCanvas = document.createElement('canvas');
+            previewCanvas.width = Math.min(size, 96);
+            previewCanvas.height = Math.min(size, 96);
+            previewCanvas.getContext('2d').drawImage(canvas, 0, 0, previewCanvas.width, previewCanvas.height);
+            preview.appendChild(previewCanvas);
+            const label = document.createElement('div');
+            label.textContent = `${size}x${size}`;
+            label.style.margin = '5px 0';
+            preview.appendChild(label);
+            const btn = document.createElement('button');
+            btn.textContent = 'Скачать';
+            btn.onclick = () => downloadIcon(size);
+            preview.appendChild(btn);
+            document.getElementById('icons').appendChild(preview);
+        }
+        
+        function downloadIcon(size) {
+            const canvas = icons[size];
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = `icon-${size}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        }
+        
+        function downloadAll() {
+            sizes.forEach(size => setTimeout(() => downloadIcon(size), size * 10));
+        }
+        
+        sizes.forEach(size => generateIcon(size));
+    </script>
+</body>
+</html>

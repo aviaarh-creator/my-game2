@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="КвадрВойны">
+    <meta name="description" content="Пошаговая стратегическая игра с экономикой, управлением юнитами и ИИ-противниками">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <title>Квадратные войны - Пошаговая стратегия</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ЭКРАН ГЛАВНОГО МЕНЮ -->
+    <div id="menuScreen" class="screen active">
+        <div class="menu-container">
+            <h1 class="game-title">⚔️ КВАДРАТНЫЕ ВОЙНЫ 🏰</h1>
+            
+            <div class="menu-buttons-container">
+                <button id="newGameBtn" class="menu-main-btn primary">🎮 НОВАЯ ИГРА</button>
+                <button id="continueBtn" class="menu-main-btn">💾 ПРОДОЛЖИТЬ</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ЭКРАН НАСТРОЕК НОВОЙ ИГРЫ -->
+    <div id="newGameSettingsScreen" class="screen">
+        <div class="menu-container">
+            <h1 class="game-title">⚔️ НАСТРОЙКИ ИГРЫ 🏰</h1>
+            
+            <div class="settings-panel">
+                <div class="setting-group">
+                    <label>Размер поля:</label>
+                    <select id="gridSizeSelect">
+                        <option value="20x20">20x20</option>
+                        <option value="30x20" selected>30x20</option>
+                        <option value="40x20">40x20</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Водные преграды:</label>
+                    <select id="waterPercentSelect">
+                        <option value="0">0%</option>
+                        <option value="5">5%</option>
+                        <option value="10">10%</option>
+                        <option value="15" selected>15%</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Количество ИИ:</label>
+                    <select id="aiCountSelect">
+                        <option value="1">1 ИИ</option>
+                        <option value="2">2 ИИ</option>
+                        <option value="3" selected>3 ИИ</option>
+                        <option value="4">4 ИИ</option>
+                        <option value="5">5 ИИ</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Сложность:</label>
+                    <select id="difficultySelect">
+                        <option value="novice">Новичок</option>
+                        <option value="medium" selected>Средний</option>
+                        <option value="hard">Сложный</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Цвет игрока:</label>
+                    <select id="playerColorSelect">
+                        <option value="green">🟢 Зеленый</option>
+                        <option value="red">🔴 Красный</option>
+                        <option value="purple">🟣 Фиолетовый</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>🔊 Звук:</label>
+                    <button id="soundToggleBtn" class="sound-toggle-btn">ВКЛ</button>
+                </div>
+                
+                <div class="menu-buttons-container" style="margin-top: 30px;">
+                    <button id="startGameBtn" class="menu-main-btn primary">🎮 НАЧАТЬ ИГРУ</button>
+                    <button id="backToMainFromSettingsBtn" class="menu-main-btn">◀ НАЗАД</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ЭКРАН ИГРЫ -->
+    <div id="gameScreen" class="screen">
+        <div class="game-container">
+            <div class="game-header">
+                <div class="player-info">
+                    <div class="player-name" id="currentPlayerName">🎮 Зеленый</div>
+                    <div class="player-resources-header" id="goldAmount"><span style="color:white">💰 10 (+0) 🪵 0 (+0) 📅 День 1</span></div>
+                </div>
+                <div class="game-buttons">
+                    <button id="undoBtn" class="game-control-btn undo hidden">↩️ ОТМЕНИТЬ ХОД</button>
+                    <button id="endTurnBtn" class="game-control-btn">✅ ЗАВЕРШИТЬ ХОД</button>
+                    <button id="menuToMainBtn" class="game-control-btn">🏠 В МЕНЮ</button>
+                </div>
+            </div>
+            
+            <div class="game-field-container">
+                <canvas id="gameCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ВСПЛЫВАЮЩЕЕ ОКНО УПРАВЛЕНИЯ ЗАМКОМ -->
+    <div id="castleModal" class="castle-modal hidden">
+        <div class="castle-modal-content">
+            <div class="castle-modal-header">
+                <h2 id="castleModalTitle">🏰 УПРАВЛЕНИЕ ЗАМКОМ</h2>
+                <button id="closeCastleModal" class="close-modal-btn">✖</button>
+            </div>
+            <div class="castle-modal-body">
+                <div class="castle-info">
+                    <div class="castle-level" id="castleLevel">Уровень: 1 - Постройка</div>
+                    <div class="castle-hp" id="castleHp">HP: 20/20</div>
+                    <div class="player-resources" id="playerResources"><span style="color:white">💰 10 🪵 0</span></div>
+                </div>
+                <div class="castle-actions">
+                    <button id="upgradeCastleBtn" class="modal-action-btn upgrade">⬆️ Улучшить замок</button>
+                    <button id="healCastleBtn" class="modal-action-btn heal">❤️ Восстановить 10 HP</button>
+                </div>
+                <div class="units-section">
+                    <div class="units-title">📢 НАЙМ ЮНИТОВ</div>
+                    <div class="unit-item"><button id="buyInfantryBtn" class="unit-buy-modal"></button></div>
+                    <div class="unit-item"><button id="buyArcherBtn" class="unit-buy-modal"></button></div>
+                    <div class="unit-item"><button id="buyCaptainBtn" class="unit-buy-modal"></button></div>
+                    <div class="unit-item"><button id="buyCavalryBtn" class="unit-buy-modal"></button></div>
+                    <div class="unit-item"><button id="buyGeneralBtn" class="unit-buy-modal"></button></div>
+                    <div class="unit-item"><button id="buyCatapultBtn" class="unit-buy-modal"></button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО ПОБЕДЫ -->
+    <div id="victoryModal" class="victory-modal hidden">
+        <div class="victory-content">
+            <h2 id="victoryMessage">🏆 ПОБЕДА! 🏆</h2>
+            <button id="playAgainBtn" class="victory-btn">🔄 ИГРАТЬ СНОВА</button>
+            <button id="menuAfterVictoryBtn" class="victory-btn">🏠 ГЛАВНОЕ МЕНЮ</button>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
